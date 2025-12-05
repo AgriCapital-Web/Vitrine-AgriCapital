@@ -5,24 +5,92 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { usePageTracking } from "@/hooks/usePageTracking";
-import Index from "./pages/Index";
+import { lazy, Suspense } from "react";
+import { Loader2 } from "lucide-react";
+
+// Pages - using lazy loading for better performance
+import HomePage from "./pages/HomePage";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminResetPassword from "./pages/AdminResetPassword";
 
+// Lazy load admin pages
+const AdminTestimonials = lazy(() => import("./pages/admin/AdminTestimonials"));
+const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter"));
+const AdminMessaging = lazy(() => import("./pages/admin/AdminMessaging"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminGallery = lazy(() => import("./pages/admin/AdminGallery"));
+const AdminPartnerships = lazy(() => import("./pages/admin/AdminPartnerships"));
+const AdminContent = lazy(() => import("./pages/admin/AdminContent"));
+const AdminNotifications = lazy(() => import("./pages/admin/AdminNotifications"));
+
 const queryClient = new QueryClient();
+
+const LoadingFallback = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center">
+    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+  </div>
+);
 
 const AppContent = () => {
   usePageTracking();
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/admin" element={<AdminLogin />} />
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      <Route path="/admin/reset-password" element={<AdminResetPassword />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Suspense fallback={<LoadingFallback />}>
+      <Routes>
+        {/* Main routes */}
+        <Route path="/" element={<HomePage />} />
+        
+        {/* Section routes (French) */}
+        <Route path="/accueil" element={<HomePage />} />
+        <Route path="/a-propos" element={<HomePage />} />
+        <Route path="/apropos" element={<HomePage />} />
+        <Route path="/notre-approche" element={<HomePage />} />
+        <Route path="/approche" element={<HomePage />} />
+        <Route path="/impact" element={<HomePage />} />
+        <Route path="/jalons" element={<HomePage />} />
+        <Route path="/fondateur" element={<HomePage />} />
+        <Route path="/partenariat" element={<HomePage />} />
+        <Route path="/temoignages" element={<HomePage />} />
+        <Route path="/contact" element={<HomePage />} />
+        
+        {/* Section routes (English) */}
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/about" element={<HomePage />} />
+        <Route path="/approach" element={<HomePage />} />
+        <Route path="/milestones" element={<HomePage />} />
+        <Route path="/founder" element={<HomePage />} />
+        <Route path="/partnership" element={<HomePage />} />
+        <Route path="/testimonials" element={<HomePage />} />
+        
+        {/* Language routes */}
+        <Route path="/fr" element={<HomePage />} />
+        <Route path="/en" element={<HomePage />} />
+        <Route path="/ar" element={<HomePage />} />
+        <Route path="/es" element={<HomePage />} />
+        <Route path="/de" element={<HomePage />} />
+        <Route path="/zh" element={<HomePage />} />
+        
+        {/* Language + Section routes */}
+        <Route path="/:lang/:section" element={<HomePage />} />
+        
+        {/* Admin routes */}
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/reset-password" element={<AdminResetPassword />} />
+        <Route path="/admin/testimonials" element={<AdminTestimonials />} />
+        <Route path="/admin/newsletter" element={<AdminNewsletter />} />
+        <Route path="/admin/messaging" element={<AdminMessaging />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/admin/gallery" element={<AdminGallery />} />
+        <Route path="/admin/partnerships" element={<AdminPartnerships />} />
+        <Route path="/admin/content" element={<AdminContent />} />
+        <Route path="/admin/notifications" element={<AdminNotifications />} />
+        
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 };
 
