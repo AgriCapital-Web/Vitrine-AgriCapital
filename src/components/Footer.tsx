@@ -113,7 +113,7 @@ const Footer = () => {
 
         <div className="border-t border-white/20 mt-8 pt-6 text-center">
           <p className="text-white/70 text-sm">
-            © 2024 {t.footer.copyright}
+            © 2025 {t.footer.copyright}
           </p>
         </div>
       </div>
