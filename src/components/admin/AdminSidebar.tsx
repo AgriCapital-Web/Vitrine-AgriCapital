@@ -1,13 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
 import { 
   BarChart3, MessageSquare, Users, Image, Handshake, 
-  Mail, Settings, FileText, Home, Send, Bell
+  Mail, Settings, FileText, Home, Send, Bell, Search, 
+  Shield, TrendingUp
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: BarChart3, label: "Tableau de bord", path: "/admin/dashboard" },
+  { icon: TrendingUp, label: "Analytiques", path: "/admin/analytics" },
   { icon: MessageSquare, label: "Témoignages", path: "/admin/testimonials" },
   { icon: Users, label: "Abonnés Newsletter", path: "/admin/newsletter" },
   { icon: Image, label: "Galerie d'images", path: "/admin/gallery" },
@@ -15,6 +17,8 @@ const menuItems = [
   { icon: FileText, label: "Contenu du site", path: "/admin/content" },
   { icon: Send, label: "Messagerie", path: "/admin/messaging" },
   { icon: Bell, label: "Notifications", path: "/admin/notifications" },
+  { icon: Search, label: "SEO", path: "/admin/seo" },
+  { icon: Shield, label: "Utilisateurs", path: "/admin/users" },
   { icon: Settings, label: "Paramètres", path: "/admin/settings" },
 ];
 

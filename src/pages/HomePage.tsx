@@ -15,6 +15,7 @@ import TestimonialsDisplay from "@/components/TestimonialsDisplay";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const sectionMap: Record<string, string> = {
@@ -79,6 +80,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden max-w-full">
+      <SEOHead />
       <WelcomePopup />
       <Navigation />
       <Hero />
