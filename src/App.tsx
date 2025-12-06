@@ -24,6 +24,9 @@ const AdminGallery = lazy(() => import("./pages/admin/AdminGallery"));
 const AdminPartnerships = lazy(() => import("./pages/admin/AdminPartnerships"));
 const AdminContent = lazy(() => import("./pages/admin/AdminContent"));
 const AdminNotifications = lazy(() => import("./pages/admin/AdminNotifications"));
+const AdminSEO = lazy(() => import("./pages/admin/AdminSEO"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
 
 const queryClient = new QueryClient();
 
@@ -86,6 +89,9 @@ const AppContent = () => {
         <Route path="/admin/partnerships" element={<AdminPartnerships />} />
         <Route path="/admin/content" element={<AdminContent />} />
         <Route path="/admin/notifications" element={<AdminNotifications />} />
+        <Route path="/admin/seo" element={<AdminSEO />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/analytics" element={<AdminAnalytics />} />
         
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

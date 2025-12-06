@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import heroImage from "@/assets/palm-oil-production.jpg";
+import SocialShareButtons from "@/components/SocialShareButtons";
 
 const Hero = () => {
   const { t } = useLanguage();
@@ -58,6 +59,9 @@ const Hero = () => {
               {t.hero.btnPartner}
             </Button>
           </div>
+
+          {/* Social Share Buttons */}
+          <SocialShareButtons variant="hero" />
         </div>
       </div>
     </section>
