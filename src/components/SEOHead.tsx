@@ -50,6 +50,8 @@ const localeMap: Record<Language, string> = {
   zh: "zh_CN",
 };
 
+const languages: Language[] = ["fr", "en", "ar", "es", "de", "zh"];
+
 const SEOHead = () => {
   const { language } = useLanguage();
   
@@ -74,6 +76,21 @@ const SEOHead = () => {
       meta.content = content;
     };
     
+    // Update or create link tags
+    const updateLink = (rel: string, href: string, hreflang?: string) => {
+      const selector = hreflang 
+        ? `link[rel="${rel}"][hreflang="${hreflang}"]` 
+        : `link[rel="${rel}"]`;
+      let link = document.querySelector(selector) as HTMLLinkElement;
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = rel;
+        if (hreflang) link.hreflang = hreflang;
+        document.head.appendChild(link);
+      }
+      link.href = href;
+    };
+    
     // Primary meta tags
     updateMeta("title", seo.title);
     updateMeta("description", seo.description);
@@ -93,13 +110,14 @@ const SEOHead = () => {
     updateMeta("twitter:image", `${baseUrl}/og-image.png`);
     
     // Update canonical
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.rel = "canonical";
-      document.head.appendChild(canonical);
-    }
-    canonical.href = currentUrl;
+    updateLink("canonical", currentUrl);
+    
+    // Update hreflang tags dynamically
+    languages.forEach((lang) => {
+      const langUrl = lang === "fr" ? baseUrl : `${baseUrl}/${lang}`;
+      updateLink("alternate", langUrl, lang);
+    });
+    updateLink("alternate", baseUrl, "x-default");
     
     // Update html lang attribute
     document.documentElement.lang = language;

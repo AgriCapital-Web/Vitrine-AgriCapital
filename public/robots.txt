@@ -12,3 +12,6 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://agricapital.ci/sitemap.xml
+Allow: /
