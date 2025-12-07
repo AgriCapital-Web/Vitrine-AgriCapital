@@ -27,6 +27,11 @@ const AdminNotifications = lazy(() => import("./pages/admin/AdminNotifications")
 const AdminSEO = lazy(() => import("./pages/admin/AdminSEO"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
+const AdminPages = lazy(() => import("./pages/admin/AdminPages"));
+const AdminMedia = lazy(() => import("./pages/admin/AdminMedia"));
+const AdminBranding = lazy(() => import("./pages/admin/AdminBranding"));
+const AdminForms = lazy(() => import("./pages/admin/AdminForms"));
+const AdminMenuNav = lazy(() => import("./pages/admin/AdminMenuNav"));
 
 const queryClient = new QueryClient();
 
@@ -92,6 +97,13 @@ const AppContent = () => {
         <Route path="/admin/seo" element={<AdminSEO />} />
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
+        <Route path="/admin/pages" element={<AdminPages />} />
+        <Route path="/admin/media" element={<AdminMedia />} />
+        <Route path="/admin/branding" element={<AdminBranding />} />
+        <Route path="/admin/forms" element={<AdminForms />} />
+        <Route path="/admin/menu" element={<AdminMenuNav />} />
+        <Route path="/admin/sections" element={<AdminContent />} />
+        <Route path="/admin/translations" element={<AdminContent />} />
         
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
