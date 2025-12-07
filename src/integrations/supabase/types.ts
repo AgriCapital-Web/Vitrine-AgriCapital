@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          read_at: string | null
+          status: string
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          read_at?: string | null
+          status?: string
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          read_at?: string | null
+          status?: string
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      form_submissions: {
+        Row: {
+          created_at: string
+          data: Json
+          form_id: string | null
+          id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          form_id?: string | null
+          id?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          form_id?: string | null
+          id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_submissions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "site_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_subscribers: {
         Row: {
           email: string
@@ -59,6 +124,379 @@ export type Database = {
           referrer?: string | null
           user_agent?: string | null
           visitor_id?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          content_ar: string | null
+          content_de: string | null
+          content_en: string | null
+          content_es: string | null
+          content_fr: string | null
+          content_zh: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          key: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          content_ar?: string | null
+          content_de?: string | null
+          content_en?: string | null
+          content_es?: string | null
+          content_fr?: string | null
+          content_zh?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          key: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          content_ar?: string | null
+          content_de?: string | null
+          content_en?: string | null
+          content_es?: string | null
+          content_fr?: string | null
+          content_zh?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          key?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_forms: {
+        Row: {
+          created_at: string
+          description: string | null
+          fields: Json
+          id: string
+          is_active: boolean
+          name: string
+          settings: Json | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          fields?: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          settings?: Json | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          fields?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          settings?: Json | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_media: {
+        Row: {
+          alt_text_en: string | null
+          alt_text_fr: string | null
+          category: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          type: string
+          url: string
+        }
+        Insert: {
+          alt_text_en?: string | null
+          alt_text_fr?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          type?: string
+          url: string
+        }
+        Update: {
+          alt_text_en?: string | null
+          alt_text_fr?: string | null
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          type?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      site_menu: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          label_ar: string | null
+          label_de: string | null
+          label_en: string | null
+          label_es: string | null
+          label_fr: string
+          label_zh: string | null
+          order_index: number
+          parent_id: string | null
+          target: string | null
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label_ar?: string | null
+          label_de?: string | null
+          label_en?: string | null
+          label_es?: string | null
+          label_fr: string
+          label_zh?: string | null
+          order_index?: number
+          parent_id?: string | null
+          target?: string | null
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          label_ar?: string | null
+          label_de?: string | null
+          label_en?: string | null
+          label_es?: string | null
+          label_fr?: string
+          label_zh?: string | null
+          order_index?: number
+          parent_id?: string | null
+          target?: string | null
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_menu_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "site_menu"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_pages: {
+        Row: {
+          created_at: string
+          description_ar: string | null
+          description_de: string | null
+          description_en: string | null
+          description_es: string | null
+          description_fr: string | null
+          description_zh: string | null
+          id: string
+          is_active: boolean
+          is_home: boolean
+          meta_description_ar: string | null
+          meta_description_de: string | null
+          meta_description_en: string | null
+          meta_description_es: string | null
+          meta_description_fr: string | null
+          meta_description_zh: string | null
+          meta_title_ar: string | null
+          meta_title_de: string | null
+          meta_title_en: string | null
+          meta_title_es: string | null
+          meta_title_fr: string | null
+          meta_title_zh: string | null
+          order_index: number
+          slug: string
+          title_ar: string | null
+          title_de: string | null
+          title_en: string | null
+          title_es: string | null
+          title_fr: string
+          title_zh: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description_ar?: string | null
+          description_de?: string | null
+          description_en?: string | null
+          description_es?: string | null
+          description_fr?: string | null
+          description_zh?: string | null
+          id?: string
+          is_active?: boolean
+          is_home?: boolean
+          meta_description_ar?: string | null
+          meta_description_de?: string | null
+          meta_description_en?: string | null
+          meta_description_es?: string | null
+          meta_description_fr?: string | null
+          meta_description_zh?: string | null
+          meta_title_ar?: string | null
+          meta_title_de?: string | null
+          meta_title_en?: string | null
+          meta_title_es?: string | null
+          meta_title_fr?: string | null
+          meta_title_zh?: string | null
+          order_index?: number
+          slug: string
+          title_ar?: string | null
+          title_de?: string | null
+          title_en?: string | null
+          title_es?: string | null
+          title_fr: string
+          title_zh?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description_ar?: string | null
+          description_de?: string | null
+          description_en?: string | null
+          description_es?: string | null
+          description_fr?: string | null
+          description_zh?: string | null
+          id?: string
+          is_active?: boolean
+          is_home?: boolean
+          meta_description_ar?: string | null
+          meta_description_de?: string | null
+          meta_description_en?: string | null
+          meta_description_es?: string | null
+          meta_description_fr?: string | null
+          meta_description_zh?: string | null
+          meta_title_ar?: string | null
+          meta_title_de?: string | null
+          meta_title_en?: string | null
+          meta_title_es?: string | null
+          meta_title_fr?: string | null
+          meta_title_zh?: string | null
+          order_index?: number
+          slug?: string
+          title_ar?: string | null
+          title_de?: string | null
+          title_en?: string | null
+          title_es?: string | null
+          title_fr?: string
+          title_zh?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_sections: {
+        Row: {
+          content_ar: string | null
+          content_de: string | null
+          content_en: string | null
+          content_es: string | null
+          content_fr: string | null
+          content_zh: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          order_index: number
+          page_id: string | null
+          settings: Json | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          content_ar?: string | null
+          content_de?: string | null
+          content_en?: string | null
+          content_es?: string | null
+          content_fr?: string | null
+          content_zh?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          order_index?: number
+          page_id?: string | null
+          settings?: Json | null
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          content_ar?: string | null
+          content_de?: string | null
+          content_en?: string | null
+          content_es?: string | null
+          content_fr?: string | null
+          content_zh?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          order_index?: number
+          page_id?: string | null
+          settings?: Json | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_sections_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "site_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_settings: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          key: string
+          type: string
+          updated_at: string
+          value: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          key: string
+          type?: string
+          updated_at?: string
+          value?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          key?: string
+          type?: string
+          updated_at?: string
+          value?: string | null
         }
         Relationships: []
       }

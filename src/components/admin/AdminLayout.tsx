@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LogOut } from "lucide-react";
+import { Loader2, LogOut, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import AdminSidebar from "./AdminSidebar";
 
 interface AdminLayoutProps {
@@ -13,6 +14,7 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userEmail, setUserEmail] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,10 +61,37 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AdminSidebar />
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <AdminSidebar />
+      </div>
       
-      <div className="ml-64">
-        <header className="bg-card border-b border-border sticky top-0 z-30 px-6 py-4">
+      {/* Mobile Header with Menu */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3">
+        <div className="flex items-center justify-between">
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 p-0">
+              <AdminSidebar onNavigate={() => setIsMobileMenuOpen(false)} />
+            </SheetContent>
+          </Sheet>
+          
+          <h1 className="text-lg font-bold text-foreground truncate max-w-[200px]">{title}</h1>
+          
+          <Button variant="ghost" size="icon" onClick={handleLogout}>
+            <LogOut className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="lg:ml-64 pt-16 lg:pt-0">
+        {/* Desktop Header */}
+        <header className="hidden lg:block bg-card border-b border-border sticky top-0 z-30 px-6 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold text-foreground">{title}</h1>
             <div className="flex items-center gap-4">
@@ -75,7 +104,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
           </div>
         </header>
 
-        <main className="p-6">
+        <main className="p-4 lg:p-6">
           {children}
         </main>
       </div>
