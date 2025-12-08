@@ -2,32 +2,47 @@ import { Card, CardContent } from "@/components/ui/card";
 import nurseryImage from "@/assets/nursery-palm.jpg";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+// Function to convert Western Arabic numerals to other numeral systems
+const convertNumber = (num: string, language: string): string => {
+  if (language === "ar") {
+    // Arabic numerals
+    const arabicNumerals = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+    return num.split("").map(digit => arabicNumerals[parseInt(digit)] || digit).join("");
+  }
+  if (language === "zh") {
+    // Chinese numerals
+    const chineseNumerals = ["〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+    return num.split("").map(digit => chineseNumerals[parseInt(digit)] || digit).join("");
+  }
+  return num;
+};
+
 const Approach = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   const steps = [
     {
-      number: "01",
+      number: convertNumber("01", language),
       title: t.approach.steps.prospecting.title,
       description: t.approach.steps.prospecting.desc,
     },
     {
-      number: "02",
+      number: convertNumber("02", language),
       title: t.approach.steps.development.title,
       description: t.approach.steps.development.desc,
     },
     {
-      number: "03",
+      number: convertNumber("03", language),
       title: t.approach.steps.followup.title,
       description: t.approach.steps.followup.desc,
     },
     {
-      number: "04",
+      number: convertNumber("04", language),
       title: t.approach.steps.harvest.title,
       description: t.approach.steps.harvest.desc,
     },
     {
-      number: "05",
+      number: convertNumber("05", language),
       title: t.approach.steps.payment.title,
       description: t.approach.steps.payment.desc,
     },

@@ -40,9 +40,9 @@ const fr = {
     },
     why: "Pourquoi choisir AgriCapital ?",
     pillars: {
-      accessibility: { title: "Accessibilité Maximale", desc: "Notre modèle flexible élimine les barrières financières et rend l'agriculture moderne accessible à tous les producteurs." },
+      accessibility: { title: "Accessibilité Maximale", desc: "Notre modèle flexible élimine les barrières financières et rend l'agriculture moderne accessible à tous." },
       expertise: { title: "Expertise Terrain", desc: "12 années d'immersion au cœur des communautés agricoles ivoiriennes nous permettent de comprendre et répondre aux réalités du terrain." },
-      sustainability: { title: "Rentabilité Garantie", desc: "Un engagement de rachat sur 20 ans assure des débouchés stables et des revenus prévisibles pour vos productions." },
+      sustainability: { title: "Rentabilité Garantie", desc: "Un engagement de rachat sur 20 ans assure des débouchés stables et des revenus prévisibles pour les producteurs." },
     },
   },
   about: {
@@ -147,7 +147,7 @@ const fr = {
   },
   contact: {
     title: "Contactez-nous",
-    subtitle: "Discutons de votre projet ou de votre intérêt pour AgriCapital",
+    subtitle: "Discutons de votre projet ou de votre intérêt pour l'agriculture durable",
     address: { title: "Adresse", value: "Daloa, Région du Haut-Sassandra\nCôte d'Ivoire" },
     email: { title: "Email", value: "contact@agricapital.ci" },
     phone: { title: "Téléphone / WhatsApp", value: "+225 05 64 55 17 17" },
@@ -276,7 +276,7 @@ const en = {
     pillars: {
       accessibility: { title: "Maximum Accessibility", desc: "A flexible support model that removes financial barriers and makes modern agriculture accessible to all." },
       expertise: { title: "Field Expertise", desc: "12 years of immersion with farming communities to understand their realities and adapt our solutions." },
-      sustainability: { title: "Assured Profitability", desc: "A 20-year commercial commitment guaranteeing stable and predictable markets for your productions." },
+      sustainability: { title: "Assured Profitability", desc: "A 20-year commercial commitment guaranteeing stable and predictable markets for producers." },
     },
   },
   about: {
@@ -381,7 +381,7 @@ const en = {
   },
   contact: {
     title: "Contact Us",
-    subtitle: "Let's discuss your project or interest in AgriCapital",
+    subtitle: "Let's discuss your project or interest in sustainable agriculture",
     address: { title: "Address", value: "Daloa, Haut-Sassandra Region\nCôte d'Ivoire" },
     email: { title: "Email", value: "contact@agricapital.ci" },
     phone: { title: "Phone / WhatsApp", value: "+225 05 64 55 17 17" },
@@ -510,7 +510,7 @@ const ar = {
     pillars: {
       accessibility: { title: "أقصى درجات الوصول", desc: "نموذج دعم مرن يزيل الحواجز المالية ويجعل الزراعة الحديثة في متناول الجميع." },
       expertise: { title: "خبرة ميدانية", desc: "١٢ سنة من الانغماس مع المجتمعات الزراعية لفهم واقعها وتكييف حلولنا." },
-      sustainability: { title: "ربحية مضمونة", desc: "التزام تجاري لمدة ٢٠ عامًا يضمن أسواقًا مستقرة ويمكن التنبؤ بها لإنتاجكم." },
+      sustainability: { title: "ربحية مضمونة", desc: "التزام تجاري لمدة ٢٠ عامًا يضمن أسواقًا مستقرة ويمكن التنبؤ بها للمنتجين." },
     },
   },
   about: {
@@ -615,7 +615,7 @@ const ar = {
   },
   contact: {
     title: "اتصل بنا",
-    subtitle: "لنناقش مشروعك أو اهتمامك بأغريكابيتال",
+    subtitle: "لنناقش مشروعك أو اهتمامك بالزراعة المستدامة",
     address: { title: "العنوان", value: "دالوا، منطقة هوت ساساندرا\nكوت ديفوار" },
     email: { title: "البريد الإلكتروني", value: "contact@agricapital.ci" },
     phone: { title: "الهاتف / واتساب", value: "+٢٢٥ ٠٥ ٦٤ ٥٥ ١٧ ١٧" },
@@ -744,7 +744,7 @@ const es = {
     pillars: {
       accessibility: { title: "Máxima Accesibilidad", desc: "Un modelo de apoyo flexible que elimina las barreras financieras y hace accesible la agricultura moderna para todos." },
       expertise: { title: "Experiencia de Campo", desc: "12 años de inmersión con las comunidades agrícolas para entender sus realidades y adaptar nuestras soluciones." },
-      sustainability: { title: "Rentabilidad Asegurada", desc: "Un compromiso comercial de 20 años que garantiza mercados estables y predecibles para sus producciones." },
+      sustainability: { title: "Rentabilidad Asegurada", desc: "Un compromiso comercial de 20 años que garantiza mercados estables y predecibles para los productores." },
     },
   },
   about: {
@@ -849,7 +849,7 @@ const es = {
   },
   contact: {
     title: "Contáctanos",
-    subtitle: "Hablemos de tu proyecto o tu interés en AgriCapital",
+    subtitle: "Hablemos de tu proyecto o tu interés en la agricultura sostenible",
     address: { title: "Dirección", value: "Daloa, Región de Haut-Sassandra\nCosta de Marfil" },
     email: { title: "Email", value: "contact@agricapital.ci" },
     phone: { title: "Teléfono / WhatsApp", value: "+225 05 64 55 17 17" },
@@ -978,7 +978,7 @@ const de = {
     pillars: {
       accessibility: { title: "Maximale Zugänglichkeit", desc: "Ein flexibles Unterstützungsmodell, das finanzielle Barrieren beseitigt und moderne Landwirtschaft für alle zugänglich macht." },
       expertise: { title: "Felderfahrung", desc: "12 Jahre Immersion in landwirtschaftlichen Gemeinden, um ihre Realitäten zu verstehen und unsere Lösungen anzupassen." },
-      sustainability: { title: "Gesicherte Rentabilität", desc: "Ein 20-jähriges kommerzielles Engagement, das stabile und vorhersehbare Märkte für Ihre Produktion garantiert." },
+      sustainability: { title: "Gesicherte Rentabilität", desc: "Ein 20-jähriges kommerzielles Engagement, das stabile und vorhersehbare Märkte für die Produzenten garantiert." },
     },
   },
   about: {
@@ -1083,7 +1083,7 @@ const de = {
   },
   contact: {
     title: "Kontaktieren Sie uns",
-    subtitle: "Lassen Sie uns über Ihr Projekt oder Ihr Interesse an AgriCapital sprechen",
+    subtitle: "Lassen Sie uns über Ihr Projekt oder Ihr Interesse an nachhaltiger Landwirtschaft sprechen",
     address: { title: "Adresse", value: "Daloa, Region Haut-Sassandra\nElfenbeinküste" },
     email: { title: "E-Mail", value: "contact@agricapital.ci" },
     phone: { title: "Telefon / WhatsApp", value: "+225 05 64 55 17 17" },
@@ -1212,7 +1212,7 @@ const zh = {
     pillars: {
       accessibility: { title: "最大可及性", desc: "灵活的支持模式，消除经济障碍，让所有人都能获得现代农业。" },
       expertise: { title: "实地专业知识", desc: "12年深入农业社区，了解他们的现实并调整我们的解决方案。" },
-      sustainability: { title: "保证盈利", desc: "20年商业承诺，为您的生产保证稳定可预测的市场。" },
+      sustainability: { title: "保证盈利", desc: "20年商业承诺，为生产者保证稳定可预测的市场。" },
     },
   },
   about: {
@@ -1317,7 +1317,7 @@ const zh = {
   },
   contact: {
     title: "联系我们",
-    subtitle: "让我们讨论您的项目或对AgriCapital的兴趣",
+    subtitle: "让我们讨论您的项目或对可持续农业的兴趣",
     address: { title: "地址", value: "达洛阿，上萨桑德拉区\n科特迪瓦" },
     email: { title: "电子邮件", value: "contact@agricapital.ci" },
     phone: { title: "电话/WhatsApp", value: "+225 05 64 55 17 17" },

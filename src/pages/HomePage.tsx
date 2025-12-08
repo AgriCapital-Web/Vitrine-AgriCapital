@@ -46,22 +46,28 @@ const HomePage = () => {
   const location = useLocation();
   const { language, setLanguage } = useLanguage();
 
+  // CRITICAL: Set language from URL on mount and when URL changes
   useEffect(() => {
-    // Handle language from URL parameter - this is critical for SEO
     const pathParts = location.pathname.split('/').filter(Boolean);
-    const firstPart = pathParts[0];
+    const firstPart = pathParts[0]?.toLowerCase();
     
-    // Check if first part is a language code
+    // Check if the first part of the path is a language code
     if (firstPart && supportedLanguages.includes(firstPart as Language)) {
-      if (language !== firstPart) {
-        setLanguage(firstPart as Language);
+      const urlLang = firstPart as Language;
+      // Always update language from URL - this is critical for SEO and sharing
+      if (language !== urlLang) {
+        setLanguage(urlLang);
+        // Also update localStorage immediately
+        localStorage.setItem("language", urlLang);
       }
     } else if (lang && supportedLanguages.includes(lang as Language)) {
-      if (language !== lang) {
-        setLanguage(lang as Language);
+      const urlLang = lang as Language;
+      if (language !== urlLang) {
+        setLanguage(urlLang);
+        localStorage.setItem("language", urlLang);
       }
     }
-  }, [lang, location.pathname, setLanguage, language]);
+  }, [location.pathname, lang, setLanguage, language]);
 
   useEffect(() => {
     // Determine section from URL

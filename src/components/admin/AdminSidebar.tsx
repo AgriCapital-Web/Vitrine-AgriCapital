@@ -3,7 +3,7 @@ import {
   BarChart3, MessageSquare, Users, Image, Handshake, 
   Mail, Settings, FileText, Home, Send, Bell, Search, 
   Shield, TrendingUp, Layout, Database, Palette, Globe,
-  Menu as MenuIcon, FormInput
+  Menu as MenuIcon, FormInput, Layers
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,7 @@ const menuItems = [
   { divider: true, label: "Contenu" },
   { icon: Layout, label: "Pages", path: "/admin/pages" },
   { icon: FileText, label: "Sections", path: "/admin/sections" },
+  { icon: Layers, label: "Blocs", path: "/admin/blocs" },
   { icon: MenuIcon, label: "Menu / Navigation", path: "/admin/menu" },
   { icon: Image, label: "Médiathèque", path: "/admin/media" },
   { icon: FormInput, label: "Formulaires", path: "/admin/forms" },

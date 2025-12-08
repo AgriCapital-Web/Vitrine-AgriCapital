@@ -25,7 +25,7 @@ const detectBrowserLanguage = (): Language => {
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => {
+  const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem("language");
     if (saved && ['fr', 'en', 'ar', 'es', 'de', 'zh'].includes(saved)) {
       return saved as Language;
@@ -33,8 +33,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return detectBrowserLanguage();
   });
 
+  // Custom setLanguage that also updates localStorage immediately
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem("language", lang);
+  };
+
   useEffect(() => {
-    localStorage.setItem("language", language);
     document.documentElement.lang = language;
     document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
   }, [language]);
