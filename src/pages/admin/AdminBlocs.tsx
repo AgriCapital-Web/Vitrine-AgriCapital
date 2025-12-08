@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { 
-  Plus, Pencil, Trash2, GripVertical, Save, X, Eye,
-  Layout, FileText
+  Plus, Pencil, Trash2, GripVertical, Save, Copy,
+  LayoutGrid, Image, Quote, List, Layers
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,15 +28,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WYSIWYGEditor from "@/components/admin/WYSIWYGEditor";
 
-const sectionTypes = [
-  { value: "hero", label: "Bannière Hero" },
-  { value: "content", label: "Contenu Texte" },
-  { value: "features", label: "Fonctionnalités" },
-  { value: "gallery", label: "Galerie" },
-  { value: "testimonials", label: "Témoignages" },
-  { value: "contact", label: "Contact" },
-  { value: "cta", label: "Appel à l'action" },
-  { value: "custom", label: "Personnalisé" },
+const blocTypes = [
+  { value: "text", label: "Texte", icon: List },
+  { value: "features", label: "Fonctionnalités", icon: LayoutGrid },
+  { value: "gallery", label: "Galerie", icon: Image },
+  { value: "quote", label: "Citation", icon: Quote },
+  { value: "cards", label: "Cartes", icon: Layers },
+  { value: "cta", label: "Appel à l'action", icon: LayoutGrid },
 ];
 
 const languages = [
@@ -48,12 +46,10 @@ const languages = [
   { code: "zh", name: "中文", flag: "🇨🇳" },
 ];
 
-interface Section {
+interface Bloc {
   id: string;
-  name: string;
+  key: string;
   type: string;
-  page_id: string | null;
-  order_index: number;
   is_active: boolean;
   content_fr: string | null;
   content_en: string | null;
@@ -61,18 +57,16 @@ interface Section {
   content_es: string | null;
   content_de: string | null;
   content_zh: string | null;
-  settings: any;
   created_at: string;
 }
 
-const AdminSections = () => {
+const AdminBlocs = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingSection, setEditingSection] = useState<Section | null>(null);
+  const [editingBloc, setEditingBloc] = useState<Bloc | null>(null);
   const [selectedLang, setSelectedLang] = useState("fr");
   const [formData, setFormData] = useState({
-    name: "",
-    type: "content",
-    page_id: "",
+    key: "",
+    type: "text",
     content_fr: "",
     content_en: "",
     content_ar: "",
@@ -84,44 +78,28 @@ const AdminSections = () => {
   
   const queryClient = useQueryClient();
 
-  const { data: sections, isLoading } = useQuery({
-    queryKey: ['admin-sections'],
+  const { data: blocs, isLoading } = useQuery({
+    queryKey: ['admin-blocs'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('site_sections')
+        .from('site_content')
         .select('*')
-        .order('order_index', { ascending: true });
+        .order('created_at', { ascending: false });
       if (error) throw error;
-      return data as Section[];
-    },
-  });
-
-  const { data: pages } = useQuery({
-    queryKey: ['admin-pages-list'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('site_pages')
-        .select('id, title_fr, slug')
-        .order('order_index', { ascending: true });
-      if (error) throw error;
-      return data;
+      return data as Bloc[];
     },
   });
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-      const maxOrder = sections?.reduce((max, s) => Math.max(max, s.order_index), -1) ?? -1;
       const { error } = await supabase
-        .from('site_sections')
-        .insert({
-          ...data,
-          order_index: maxOrder + 1,
-        });
+        .from('site_content')
+        .insert(data);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-sections'] });
-      toast.success("Section créée");
+      queryClient.invalidateQueries({ queryKey: ['admin-blocs'] });
+      toast.success("Bloc créé");
       resetForm();
     },
     onError: () => toast.error("Erreur lors de la création"),
@@ -130,14 +108,14 @@ const AdminSections = () => {
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: any }) => {
       const { error } = await supabase
-        .from('site_sections')
+        .from('site_content')
         .update(data)
         .eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-sections'] });
-      toast.success("Section mise à jour");
+      queryClient.invalidateQueries({ queryKey: ['admin-blocs'] });
+      toast.success("Bloc mis à jour");
       resetForm();
     },
     onError: () => toast.error("Erreur lors de la mise à jour"),
@@ -146,14 +124,14 @@ const AdminSections = () => {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from('site_sections')
+        .from('site_content')
         .delete()
         .eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-sections'] });
-      toast.success("Section supprimée");
+      queryClient.invalidateQueries({ queryKey: ['admin-blocs'] });
+      toast.success("Bloc supprimé");
     },
     onError: () => toast.error("Erreur lors de la suppression"),
   });
@@ -161,22 +139,36 @@ const AdminSections = () => {
   const toggleMutation = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase
-        .from('site_sections')
+        .from('site_content')
         .update({ is_active })
         .eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-sections'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-blocs'] });
       toast.success("Statut mis à jour");
     },
   });
 
+  const duplicateMutation = useMutation({
+    mutationFn: async (bloc: Bloc) => {
+      const { id, created_at, ...rest } = bloc;
+      const { error } = await supabase
+        .from('site_content')
+        .insert({ ...rest, key: `${rest.key}_copy` });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-blocs'] });
+      toast.success("Bloc dupliqué");
+    },
+    onError: () => toast.error("Erreur lors de la duplication"),
+  });
+
   const resetForm = () => {
     setFormData({
-      name: "",
-      type: "content",
-      page_id: "",
+      key: "",
+      type: "text",
       content_fr: "",
       content_en: "",
       content_ar: "",
@@ -185,37 +177,35 @@ const AdminSections = () => {
       content_zh: "",
       is_active: true,
     });
-    setEditingSection(null);
+    setEditingBloc(null);
     setIsDialogOpen(false);
   };
 
-  const handleEdit = (section: Section) => {
-    setEditingSection(section);
+  const handleEdit = (bloc: Bloc) => {
+    setEditingBloc(bloc);
     setFormData({
-      name: section.name,
-      type: section.type,
-      page_id: section.page_id || "",
-      content_fr: section.content_fr || "",
-      content_en: section.content_en || "",
-      content_ar: section.content_ar || "",
-      content_es: section.content_es || "",
-      content_de: section.content_de || "",
-      content_zh: section.content_zh || "",
-      is_active: section.is_active,
+      key: bloc.key,
+      type: bloc.type,
+      content_fr: bloc.content_fr || "",
+      content_en: bloc.content_en || "",
+      content_ar: bloc.content_ar || "",
+      content_es: bloc.content_es || "",
+      content_de: bloc.content_de || "",
+      content_zh: bloc.content_zh || "",
+      is_active: bloc.is_active,
     });
     setIsDialogOpen(true);
   };
 
   const handleSubmit = () => {
-    if (!formData.name) {
-      toast.error("Le nom est requis");
+    if (!formData.key) {
+      toast.error("La clé est requise");
       return;
     }
 
     const data = {
-      name: formData.name,
+      key: formData.key,
       type: formData.type,
-      page_id: formData.page_id || null,
       content_fr: formData.content_fr || null,
       content_en: formData.content_en || null,
       content_ar: formData.content_ar || null,
@@ -225,23 +215,29 @@ const AdminSections = () => {
       is_active: formData.is_active,
     };
 
-    if (editingSection) {
-      updateMutation.mutate({ id: editingSection.id, data });
+    if (editingBloc) {
+      updateMutation.mutate({ id: editingBloc.id, data });
     } else {
       createMutation.mutate(data);
     }
   };
 
+  const getBlocIcon = (type: string) => {
+    const blocType = blocTypes.find(t => t.value === type);
+    const IconComponent = blocType?.icon || List;
+    return <IconComponent className="w-4 h-4" />;
+  };
+
   return (
-    <AdminLayout title="Gestion des Sections">
+    <AdminLayout title="Gestion des Blocs">
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <p className="text-muted-foreground">
-            Gérez les sections de contenu du site
+            Gérez les blocs de contenu réutilisables du site
           </p>
           <Button onClick={() => setIsDialogOpen(true)} className="gap-2">
             <Plus className="w-4 h-4" />
-            Nouvelle section
+            Nouveau bloc
           </Button>
         </div>
 
@@ -250,86 +246,97 @@ const AdminSections = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
           </div>
         ) : (
-          <Card>
-            <CardContent className="p-0">
-              <div className="divide-y divide-border">
-                {sections?.map((section) => (
-                  <div 
-                    key={section.id} 
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 hover:bg-muted/50"
-                  >
-                    <div className="flex items-start sm:items-center gap-3">
-                      <GripVertical className="w-5 h-5 text-muted-foreground cursor-move hidden sm:block" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-medium truncate">{section.name}</p>
-                          <Badge variant="outline" className="text-xs">
-                            {sectionTypes.find(t => t.value === section.type)?.label || section.type}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {pages?.find(p => p.id === section.page_id)?.title_fr || "Globale"}
-                        </p>
-                      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {blocs?.map((bloc) => (
+              <Card key={bloc.id} className="relative group">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {getBlocIcon(bloc.type)}
+                      <CardTitle className="text-base truncate">{bloc.key}</CardTitle>
                     </div>
-                    
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <Switch
-                        checked={section.is_active}
-                        onCheckedChange={(checked) => 
-                          toggleMutation.mutate({ id: section.id, is_active: checked })
+                    <Switch
+                      checked={bloc.is_active}
+                      onCheckedChange={(checked) => 
+                        toggleMutation.mutate({ id: bloc.id, is_active: checked })
+                      }
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Badge variant="outline" className="mb-3">
+                    {blocTypes.find(t => t.value === bloc.type)?.label || bloc.type}
+                  </Badge>
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+                    {bloc.content_fr?.replace(/<[^>]*>/g, '').substring(0, 100) || "Aucun contenu"}
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => handleEdit(bloc)}
+                    >
+                      <Pencil className="w-3 h-3 mr-1" />
+                      Modifier
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => duplicateMutation.mutate(bloc)}
+                    >
+                      <Copy className="w-3 h-3" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (confirm("Supprimer ce bloc ?")) {
+                          deleteMutation.mutate(bloc.id);
                         }
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(section)}
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          if (confirm("Supprimer cette section ?")) {
-                            deleteMutation.mutate(section.id);
-                          }
-                        }}
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
-                    </div>
+                      }}
+                    >
+                      <Trash2 className="w-3 h-3 text-destructive" />
+                    </Button>
                   </div>
-                ))}
+                </CardContent>
+              </Card>
+            ))}
 
-                {sections?.length === 0 && (
-                  <div className="p-12 text-center text-muted-foreground">
-                    <Layout className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Aucune section créée</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+            {blocs?.length === 0 && (
+              <Card className="col-span-full">
+                <CardContent className="p-12 text-center text-muted-foreground">
+                  <Layers className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucun bloc créé</p>
+                  <p className="text-sm mt-2">
+                    Créez des blocs de contenu réutilisables pour enrichir vos pages
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         )}
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                {editingSection ? "Modifier la section" : "Nouvelle section"}
+                {editingBloc ? "Modifier le bloc" : "Nouveau bloc"}
               </DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4 mt-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Nom de la section *</label>
+                  <label className="text-sm font-medium">Clé unique *</label>
                   <Input
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Ex: Bannière principale"
+                    value={formData.key}
+                    onChange={(e) => setFormData({ ...formData, key: e.target.value.toLowerCase().replace(/\s+/g, '_') })}
+                    placeholder="Ex: hero_title, feature_card_1"
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Utilisez des underscores, sans espaces ni caractères spéciaux
+                  </p>
                 </div>
                 
                 <div className="space-y-2">
@@ -342,34 +349,17 @@ const AdminSections = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {sectionTypes.map((type) => (
+                      {blocTypes.map((type) => (
                         <SelectItem key={type.value} value={type.value}>
-                          {type.label}
+                          <div className="flex items-center gap-2">
+                            <type.icon className="w-4 h-4" />
+                            {type.label}
+                          </div>
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Page associée</label>
-                <Select
-                  value={formData.page_id}
-                  onValueChange={(value) => setFormData({ ...formData, page_id: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Section globale (toutes les pages)" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Globale</SelectItem>
-                    {pages?.map((page) => (
-                      <SelectItem key={page.id} value={page.id}>
-                        {page.title_fr} (/{page.slug})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
 
               <div className="space-y-2">
@@ -404,7 +394,7 @@ const AdminSections = () => {
                   checked={formData.is_active}
                   onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                 />
-                <label className="text-sm">Section active</label>
+                <label className="text-sm">Bloc actif</label>
               </div>
 
               <div className="flex justify-end gap-2 pt-4">
@@ -413,7 +403,7 @@ const AdminSections = () => {
                 </Button>
                 <Button onClick={handleSubmit} className="gap-2">
                   <Save className="w-4 h-4" />
-                  {editingSection ? "Mettre à jour" : "Créer"}
+                  {editingBloc ? "Mettre à jour" : "Créer"}
                 </Button>
               </div>
             </div>
@@ -424,4 +414,4 @@ const AdminSections = () => {
   );
 };
 
-export default AdminSections;
+export default AdminBlocs;

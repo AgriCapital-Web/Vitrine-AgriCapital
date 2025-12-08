@@ -34,7 +34,7 @@ const AdminForms = lazy(() => import("./pages/admin/AdminForms"));
 const AdminMenuNav = lazy(() => import("./pages/admin/AdminMenuNav"));
 const AdminSections = lazy(() => import("./pages/admin/AdminSections"));
 const AdminTranslations = lazy(() => import("./pages/admin/AdminTranslations"));
-
+const AdminBlocs = lazy(() => import("./pages/admin/AdminBlocs"));
 const queryClient = new QueryClient();
 
 const LoadingFallback = () => (
@@ -106,6 +106,7 @@ const AppContent = () => {
         <Route path="/admin/menu" element={<AdminMenuNav />} />
         <Route path="/admin/sections" element={<AdminSections />} />
         <Route path="/admin/translations" element={<AdminTranslations />} />
+        <Route path="/admin/blocs" element={<AdminBlocs />} />
         
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
