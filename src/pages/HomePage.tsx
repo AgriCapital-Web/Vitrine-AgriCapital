@@ -16,7 +16,7 @@ import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage, Language } from "@/contexts/LanguageContext";
 
 const sectionMap: Record<string, string> = {
   'accueil': 'accueil',
@@ -39,17 +39,29 @@ const sectionMap: Record<string, string> = {
   'contact': 'contact',
 };
 
+const supportedLanguages: Language[] = ['fr', 'en', 'ar', 'es', 'de', 'zh'];
+
 const HomePage = () => {
   const { lang, section } = useParams();
   const location = useLocation();
-  const { setLanguage } = useLanguage();
+  const { language, setLanguage } = useLanguage();
 
   useEffect(() => {
-    // Handle language from URL parameter
-    if (lang && ['fr', 'en', 'ar', 'es', 'de', 'zh'].includes(lang)) {
-      setLanguage(lang as any);
+    // Handle language from URL parameter - this is critical for SEO
+    const pathParts = location.pathname.split('/').filter(Boolean);
+    const firstPart = pathParts[0];
+    
+    // Check if first part is a language code
+    if (firstPart && supportedLanguages.includes(firstPart as Language)) {
+      if (language !== firstPart) {
+        setLanguage(firstPart as Language);
+      }
+    } else if (lang && supportedLanguages.includes(lang as Language)) {
+      if (language !== lang) {
+        setLanguage(lang as Language);
+      }
     }
-  }, [lang, setLanguage]);
+  }, [lang, location.pathname, setLanguage, language]);
 
   useEffect(() => {
     // Determine section from URL
@@ -60,9 +72,14 @@ const HomePage = () => {
       targetSection = sectionMap[section.toLowerCase()];
     } else {
       // Extract section from pathname (e.g., /impact, /a-propos)
-      const pathSection = location.pathname.split('/').filter(Boolean)[0];
-      if (pathSection && sectionMap[pathSection.toLowerCase()]) {
-        targetSection = sectionMap[pathSection.toLowerCase()];
+      const pathParts = location.pathname.split('/').filter(Boolean);
+      // Skip language code if present
+      const sectionPart = supportedLanguages.includes(pathParts[0] as Language) 
+        ? pathParts[1] 
+        : pathParts[0];
+      
+      if (sectionPart && sectionMap[sectionPart.toLowerCase()]) {
+        targetSection = sectionMap[sectionPart.toLowerCase()];
       }
     }
 

@@ -220,7 +220,7 @@ const fr = {
       maxSize: "Max 5MB",
       status: "Statut",
       statusPlaceholder: "Sélectionnez votre statut",
-      subscriberQuestion: "Êtes-vous souscripteur AgriCapital ?",
+      subscriberQuestion: "Êtes-vous abonné(e) AgriCapital ?",
     },
   },
   newsletter: {
