@@ -32,6 +32,8 @@ const AdminMedia = lazy(() => import("./pages/admin/AdminMedia"));
 const AdminBranding = lazy(() => import("./pages/admin/AdminBranding"));
 const AdminForms = lazy(() => import("./pages/admin/AdminForms"));
 const AdminMenuNav = lazy(() => import("./pages/admin/AdminMenuNav"));
+const AdminSections = lazy(() => import("./pages/admin/AdminSections"));
+const AdminTranslations = lazy(() => import("./pages/admin/AdminTranslations"));
 
 const queryClient = new QueryClient();
 
@@ -102,8 +104,8 @@ const AppContent = () => {
         <Route path="/admin/branding" element={<AdminBranding />} />
         <Route path="/admin/forms" element={<AdminForms />} />
         <Route path="/admin/menu" element={<AdminMenuNav />} />
-        <Route path="/admin/sections" element={<AdminContent />} />
-        <Route path="/admin/translations" element={<AdminContent />} />
+        <Route path="/admin/sections" element={<AdminSections />} />
+        <Route path="/admin/translations" element={<AdminTranslations />} />
         
         {/* 404 */}
         <Route path="*" element={<NotFound />} />

@@ -304,11 +304,11 @@ const Testimonials = () => {
                   </Select>
                 </div>
 
-                {/* AgriCapital subscriber field - only show for planteur */}
-                {formData.status === "planteur" && (
+                {/* AgriCapital subscriber field - show for planteur or proprietaire */}
+                {(formData.status === "planteur" || formData.status === "proprietaire") && (
                   <div className="space-y-2 p-4 bg-secondary/50 rounded-lg">
                     <label className="text-sm font-medium text-foreground flex items-center gap-2">
-                      {t.testimonials.form.subscriberQuestion || "Êtes-vous souscripteur AgriCapital ?"}
+                      {t.testimonials.form.subscriberQuestion || "Êtes-vous abonné(e) AgriCapital ?"}
                     </label>
                     <div className="flex gap-4">
                       <label className="flex items-center gap-2 cursor-pointer">
