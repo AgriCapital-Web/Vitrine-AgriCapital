@@ -1,5 +1,10 @@
 {
   "rewrites": [
+    { "source": "/en", "destination": "/index.html" },
+    { "source": "/ar", "destination": "/index.html" },
+    { "source": "/es", "destination": "/index.html" },
+    { "source": "/de", "destination": "/index.html" },
+    { "source": "/zh", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/" }
   ],
   "headers": [
@@ -22,6 +27,13 @@
       "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/:lang(en|ar|es|de|zh)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" },
+        { "key": "Vary", "value": "Accept-Language" }
       ]
     }
   ]
