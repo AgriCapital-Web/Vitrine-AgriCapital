@@ -29,12 +29,13 @@ const menuItems = [
   { icon: Handshake, label: "Partenariats", path: "/admin/partnerships" },
   { icon: Send, label: "Messages", path: "/admin/messaging" },
   { divider: true, label: "Configuration" },
+  { icon: Database, label: "CMS Avancé", path: "/admin/cms" },
   { icon: Palette, label: "Design & Branding", path: "/admin/branding" },
   { icon: Globe, label: "Langues & Traductions", path: "/admin/translations" },
   { icon: Search, label: "SEO", path: "/admin/seo" },
   { icon: Bell, label: "Notifications", path: "/admin/notifications" },
   { icon: Shield, label: "Utilisateurs", path: "/admin/users" },
-  { icon: Database, label: "Paramètres", path: "/admin/settings" },
+  { icon: Settings, label: "Paramètres", path: "/admin/settings" },
 ];
 
 const AdminSidebar = ({ onNavigate }: AdminSidebarProps) => {
