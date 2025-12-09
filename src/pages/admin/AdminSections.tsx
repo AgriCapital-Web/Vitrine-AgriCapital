@@ -1,13 +1,12 @@
 import { useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { 
-  Plus, Pencil, Trash2, GripVertical, Save, X, Eye,
-  Layout, FileText
+  Plus, Pencil, Trash2, GripVertical, Save, Layout
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +26,23 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WYSIWYGEditor from "@/components/admin/WYSIWYGEditor";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const sectionTypes = [
   { value: "hero", label: "Bannière Hero" },
@@ -65,6 +81,89 @@ interface Section {
   created_at: string;
 }
 
+interface SortableSectionItemProps {
+  section: Section;
+  pages: any[] | undefined;
+  onEdit: (section: Section) => void;
+  onDelete: (id: string) => void;
+  onToggle: (id: string, is_active: boolean) => void;
+}
+
+const SortableSectionItem = ({ section, pages, onEdit, onDelete, onToggle }: SortableSectionItemProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: section.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : 1,
+  };
+
+  return (
+    <div 
+      ref={setNodeRef}
+      style={style}
+      className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 hover:bg-muted/50 border-b border-border last:border-0 ${isDragging ? 'bg-muted shadow-lg rounded-lg' : ''}`}
+    >
+      <div className="flex items-start sm:items-center gap-3">
+        <button
+          {...attributes}
+          {...listeners}
+          className="p-1 hover:bg-muted rounded cursor-grab active:cursor-grabbing touch-none"
+        >
+          <GripVertical className="w-5 h-5 text-muted-foreground" />
+        </button>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-medium truncate">{section.name}</p>
+            <Badge variant="outline" className="text-xs">
+              {sectionTypes.find(t => t.value === section.type)?.label || section.type}
+            </Badge>
+            <Badge variant={section.is_active ? "default" : "secondary"} className="text-xs">
+              {section.is_active ? "Actif" : "Inactif"}
+            </Badge>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            {pages?.find(p => p.id === section.page_id)?.title_fr || "Globale"} • Ordre: {section.order_index}
+          </p>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Switch
+          checked={section.is_active}
+          onCheckedChange={(checked) => onToggle(section.id, checked)}
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => onEdit(section)}
+        >
+          <Pencil className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            if (confirm("Supprimer cette section ?")) {
+              onDelete(section.id);
+            }
+          }}
+        >
+          <Trash2 className="w-4 h-4 text-destructive" />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const AdminSections = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingSection, setEditingSection] = useState<Section | null>(null);
@@ -83,6 +182,17 @@ const AdminSections = () => {
   });
   
   const queryClient = useQueryClient();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const { data: sections, isLoading } = useQuery({
     queryKey: ['admin-sections'],
@@ -172,6 +282,40 @@ const AdminSections = () => {
     },
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: async (updates: { id: string; order_index: number }[]) => {
+      for (const update of updates) {
+        const { error } = await supabase
+          .from('site_sections')
+          .update({ order_index: update.order_index })
+          .eq('id', update.id);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-sections'] });
+      toast.success("Ordre mis à jour");
+    },
+    onError: () => toast.error("Erreur lors de la réorganisation"),
+  });
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id && sections) {
+      const oldIndex = sections.findIndex((s) => s.id === active.id);
+      const newIndex = sections.findIndex((s) => s.id === over.id);
+
+      const newSections = arrayMove(sections, oldIndex, newIndex);
+      const updates = newSections.map((section, index) => ({
+        id: section.id,
+        order_index: index,
+      }));
+
+      reorderMutation.mutate(updates);
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -236,9 +380,14 @@ const AdminSections = () => {
     <AdminLayout title="Gestion des Sections">
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <p className="text-muted-foreground">
-            Gérez les sections de contenu du site
-          </p>
+          <div>
+            <p className="text-muted-foreground">
+              Gérez les sections de contenu du site
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Glissez-déposez pour réorganiser l'ordre des sections
+            </p>
+          </div>
           <Button onClick={() => setIsDialogOpen(true)} className="gap-2">
             <Plus className="w-4 h-4" />
             Nouvelle section
@@ -252,63 +401,34 @@ const AdminSections = () => {
         ) : (
           <Card>
             <CardContent className="p-0">
-              <div className="divide-y divide-border">
-                {sections?.map((section) => (
-                  <div 
-                    key={section.id} 
-                    className="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4 hover:bg-muted/50"
+              {sections && sections.length > 0 ? (
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={sections.map(s => s.id)}
+                    strategy={verticalListSortingStrategy}
                   >
-                    <div className="flex items-start sm:items-center gap-3">
-                      <GripVertical className="w-5 h-5 text-muted-foreground cursor-move hidden sm:block" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-medium truncate">{section.name}</p>
-                          <Badge variant="outline" className="text-xs">
-                            {sectionTypes.find(t => t.value === section.type)?.label || section.type}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {pages?.find(p => p.id === section.page_id)?.title_fr || "Globale"}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <Switch
-                        checked={section.is_active}
-                        onCheckedChange={(checked) => 
-                          toggleMutation.mutate({ id: section.id, is_active: checked })
-                        }
+                    {sections.map((section) => (
+                      <SortableSectionItem
+                        key={section.id}
+                        section={section}
+                        pages={pages}
+                        onEdit={handleEdit}
+                        onDelete={(id) => deleteMutation.mutate(id)}
+                        onToggle={(id, is_active) => toggleMutation.mutate({ id, is_active })}
                       />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(section)}
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          if (confirm("Supprimer cette section ?")) {
-                            deleteMutation.mutate(section.id);
-                          }
-                        }}
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-
-                {sections?.length === 0 && (
-                  <div className="p-12 text-center text-muted-foreground">
-                    <Layout className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Aucune section créée</p>
-                  </div>
-                )}
-              </div>
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              ) : (
+                <div className="p-12 text-center text-muted-foreground">
+                  <Layout className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>Aucune section créée</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
