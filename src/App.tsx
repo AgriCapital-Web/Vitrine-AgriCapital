@@ -37,6 +37,8 @@ const AdminSections = lazy(() => import("./pages/admin/AdminSections"));
 const AdminTranslations = lazy(() => import("./pages/admin/AdminTranslations"));
 const AdminBlocs = lazy(() => import("./pages/admin/AdminBlocs"));
 const AdminCMS = lazy(() => import("./pages/admin/AdminCMS"));
+const AdminMediaLibrary = lazy(() => import("./pages/admin/AdminMediaLibrary"));
+const AdminPageBuilder = lazy(() => import("./pages/admin/AdminPageBuilder"));
 const queryClient = new QueryClient();
 
 const LoadingFallback = () => (
@@ -112,6 +114,8 @@ const AppContent = () => {
         <Route path="/admin/translations" element={<AdminTranslations />} />
         <Route path="/admin/blocs" element={<AdminBlocs />} />
         <Route path="/admin/cms" element={<AdminCMS />} />
+        <Route path="/admin/media-library" element={<AdminMediaLibrary />} />
+        <Route path="/admin/page-builder" element={<AdminPageBuilder />} />
         
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
