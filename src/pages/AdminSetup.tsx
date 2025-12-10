@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,39 @@ const AdminSetup = () => {
   const [secret, setSecret] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // Auto-initialize on mount
+  useEffect(() => {
+    const autoInit = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-admin`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-admin-secret": "@AgriCapi",
+            },
+          }
+        );
+
+        const data = await response.json();
+        console.log("Auto-init response:", data);
+
+        if (data.success) {
+          setIsSuccess(true);
+          toast.success(data.message || "Admin créé avec succès!");
+        }
+      } catch (error) {
+        console.error("Auto-init error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    autoInit();
+  }, []);
 
   const handleSetup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +62,7 @@ const AdminSetup = () => {
       );
 
       const data = await response.json();
+      console.log("Setup response:", data);
 
       if (data.success) {
         setIsSuccess(true);
