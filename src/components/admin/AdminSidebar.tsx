@@ -3,7 +3,7 @@ import {
   BarChart3, MessageSquare, Users, Image, Handshake, 
   Mail, Settings, FileText, Home, Send, Bell, Search, 
   Shield, TrendingUp, Layout, Database, Palette, Globe,
-  Menu as MenuIcon, FormInput, Layers
+  Menu as MenuIcon, FormInput, Layers, ImageIcon, LayoutTemplate
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { cn } from "@/lib/utils";
@@ -17,11 +17,13 @@ const menuItems = [
   { icon: BarChart3, label: "Tableau de bord", path: "/admin/dashboard" },
   { icon: TrendingUp, label: "Analytiques", path: "/admin/analytics" },
   { divider: true, label: "Contenu" },
+  { icon: LayoutTemplate, label: "Constructeur de pages", path: "/admin/page-builder" },
   { icon: Layout, label: "Pages", path: "/admin/pages" },
   { icon: FileText, label: "Sections", path: "/admin/sections" },
   { icon: Layers, label: "Blocs", path: "/admin/blocs" },
   { icon: MenuIcon, label: "Menu / Navigation", path: "/admin/menu" },
-  { icon: Image, label: "Médiathèque", path: "/admin/media" },
+  { icon: ImageIcon, label: "Médiathèque", path: "/admin/media-library" },
+  { icon: Image, label: "Galerie", path: "/admin/media" },
   { icon: FormInput, label: "Formulaires", path: "/admin/forms" },
   { divider: true, label: "Données" },
   { icon: MessageSquare, label: "Témoignages", path: "/admin/testimonials" },
