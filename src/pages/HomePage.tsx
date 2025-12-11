@@ -3,6 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import WelcomePopup from "@/components/WelcomePopup";
+import AIChatbot from "@/components/AIChatbot";
 import Ambitions from "@/components/Ambitions";
 import About from "@/components/About";
 import Approach from "@/components/Approach";
@@ -105,6 +106,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-background overflow-x-hidden max-w-full">
       <SEOHead />
       <WelcomePopup />
+      <AIChatbot />
       <Navigation />
       <Hero />
       <Ambitions />

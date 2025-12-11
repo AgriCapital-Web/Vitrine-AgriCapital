@@ -106,13 +106,14 @@ const WelcomePopup = () => {
   const isRTL = language === "ar";
 
   useEffect(() => {
-    const hasVisited = sessionStorage.getItem("hasVisitedAgriCapital");
+    // Use a new key to force showing the updated popup
+    const hasVisited = sessionStorage.getItem("agricapital_popup_v2");
     
     if (!hasVisited) {
       const timer = setTimeout(() => {
         setIsOpen(true);
-        sessionStorage.setItem("hasVisitedAgriCapital", "true");
-      }, 1000);
+        sessionStorage.setItem("agricapital_popup_v2", "true");
+      }, 800);
       return () => clearTimeout(timer);
     }
   }, []);
